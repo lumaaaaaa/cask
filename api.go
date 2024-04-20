@@ -73,8 +73,6 @@ func ask(prompt string) {
 		log.Fatal("Error reading response body: ", err)
 	}
 
-	fmt.Println(string(respBody))
-
 	// handle body
 	content := ""
 	split := strings.Split(string(respBody), "data: ")
