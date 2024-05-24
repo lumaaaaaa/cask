@@ -14,8 +14,8 @@ request to the ChatOn API.
 ## Usage
 To execute the PoC as a demo:
 ```shell
-git clone https://github.com/lumaaaaaa/chatOn
-cd chatOn
+git clone https://github.com/lumaaaaaa/cAsk
+cd cAsk
 go run .
 ```
 

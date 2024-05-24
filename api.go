@@ -15,6 +15,9 @@ import (
 )
 
 func ask(prompt string) {
+	// pretty!
+	fmt.Println("> ", prompt)
+
 	// init signature
 	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05Z")
 	prefix := []byte("POST" + ":" + Path + ":" + timestamp + "\n")
