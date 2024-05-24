@@ -1,4 +1,4 @@
-# chatOn 
+# cAsk 
 ## Description
 This repository contains a simple PoC demonstrating how to communicate with the ChatOn API in order to leverage their 
 AI compute.
