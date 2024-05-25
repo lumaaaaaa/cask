@@ -27,3 +27,7 @@ type ResponseChunk struct {
 		FinishReason interface{} `json:"finish_reason"`
 	} `json:"choices"`
 }
+
+type CommandResponse struct {
+	Commands []string `json:"commands"`
+}

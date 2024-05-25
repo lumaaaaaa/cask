@@ -10,41 +10,148 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"os/exec"
+	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
 
-func ask(prompt string) {
+func handleChat(prompt, model, mode string) {
 	// pretty!
 	fmt.Println("> ", prompt)
-
-	// init signature
-	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05Z")
-	prefix := []byte("POST" + ":" + Path + ":" + timestamp + "\n")
 
 	// create request body
 	var request RequestBody
 	request.FunctionImageGen = true
 	request.FunctionWebSearch = true
 	request.MaxTokens = MaxTokens
-	request.Messages = []struct {
-		Content string `json:"content"`
-		Role    string `json:"role"`
-	}{
-		{
-			Content: SystemPrompt,
-			Role:    "system",
-		},
-		{
-			Content: prompt,
-			Role:    "user",
-		},
+	request.Model = model
+
+	// handle different modes
+	switch mode {
+	case "cmd":
+		path, err := os.Getwd()
+		if err != nil {
+			fmt.Println("error getting current work directory: ", err)
+			os.Exit(1)
+		}
+
+		entries, err := os.ReadDir(path)
+		if err != nil {
+			fmt.Println("error reading current directory: ", err)
+			os.Exit(1)
+		}
+
+		var lsOutput string
+		for _, entry := range entries {
+			lsOutput += entry.Name() + " - Is directory: " + strconv.FormatBool(entry.IsDir()) + "\n"
+		}
+
+		request.Messages = []struct {
+			Content string `json:"content"`
+			Role    string `json:"role"`
+		}{
+			{
+				Content: CMDSystemPrompt,
+				Role:    "system",
+			},
+			{
+				Content: fmt.Sprintf("My system information is as follows:\n\n"+
+					"OS: %s\n\n"+
+					"Current work directory: %s\n\n"+
+					"`ls` output:\n%s\n"+
+					"---", runtime.GOOS, path, lsOutput),
+				Role: "user",
+			},
+			{
+				Content: prompt,
+				Role:    "user",
+			},
+		}
+
+		body, err := json.Marshal(request)
+		if err != nil {
+			log.Fatal("Error marshalling request body: ", err)
+		}
+
+		response := ask(body)
+
+		var cmdResponse CommandResponse
+		err = json.Unmarshal([]byte(response), &cmdResponse)
+		if err != nil {
+			log.Fatal("Error unmarshalling command response: ", err)
+		}
+
+		fmt.Println("\ncask would like to execute the following commands:")
+		for _, command := range cmdResponse.Commands {
+			// print the command
+			fmt.Printf("> `%s`\n", command)
+
+			// check if the user wants to execute the command
+			fmt.Print("execute this command? (y/n): ")
+			var input string
+			_, err := fmt.Scanln(&input)
+			if err != nil {
+				log.Fatal("Error reading input: ", err)
+			}
+
+			if input != "y" {
+				fmt.Println("exiting...")
+				os.Exit(0)
+			}
+
+			// execute the command
+			cmd := exec.Command("zsh", "-c", command)
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			err = cmd.Run()
+			if err != nil {
+				fmt.Println(strings.Split(command, " ")[0], "exited with error: ", err)
+			}
+
+			fmt.Println()
+		}
+
+		fmt.Println("command execution finished.")
+		break
+
+	case "default":
+		request.Messages = []struct {
+			Content string `json:"content"`
+			Role    string `json:"role"`
+		}{
+			{
+				Content: SystemPrompt,
+				Role:    "system",
+			},
+			{
+				Content: prompt,
+				Role:    "user",
+			},
+		}
+
+		body, err := json.Marshal(request)
+		if err != nil {
+			log.Fatal("Error marshalling request body: ", err)
+		}
+
+		response := ask(body)
+		fmt.Println(response)
+
+		break
+
+	default:
+		fmt.Println("invalid mode: ", mode)
+		break
 	}
-	request.Model = Model
-	body, err := json.Marshal(request)
-	if err != nil {
-		log.Fatal("Error marshalling request body: ", err)
-	}
+}
+
+func ask(body []byte) string {
+	// init signature
+	timestamp := time.Now().UTC().Format("2006-01-02T15:04:05Z")
+	prefix := []byte("POST" + ":" + Path + ":" + timestamp + "\n")
 
 	// create signature
 	signature := generateSignature(append(prefix, body...))
@@ -93,8 +200,8 @@ func ask(prompt string) {
 		}
 	}
 
-	// print the trimmed chat message
-	fmt.Println(strings.TrimSpace(content))
+	// return the trimmed chat message
+	return strings.TrimSpace(content)
 }
 
 func generateSignature(toSign []byte) string {
