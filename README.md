@@ -1,4 +1,4 @@
-# cAsk 
+# cask 
 ## Description
 This repository contains a simple PoC demonstrating how to communicate with the ChatOn API in order to leverage their 
 AI compute.
@@ -12,11 +12,16 @@ The code provided in this repository demonstrates how to generate the HMAC-SHA25
 request to the ChatOn API.
 
 ## Usage
-To execute the PoC as a demo:
+To compile and install:
 ```shell
-git clone https://github.com/lumaaaaaa/cAsk
-cd cAsk
+git clone https://github.com/lumaaaaaa/cask
+cd cask
 go run .
+```
+
+Then simply:
+```shell
+cask <prompt>
 ```
 
 Beyond this, take a look at the `ask()` function in "api.go" and utilize the functions however you please.
