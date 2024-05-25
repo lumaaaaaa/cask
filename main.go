@@ -22,7 +22,7 @@ var (
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: cAsk <prompt>")
+		fmt.Println("Usage: cask <prompt>")
 		os.Exit(1)
 	}
 
