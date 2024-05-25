@@ -42,7 +42,7 @@ func handleCommand(command string) {
 
 	// initialize the byte counter
 	byteCounter := &ByteCounter{}
-	multiWriter := io.MultiWriter(byteCounter, os.Stdout)
+	multiWriter := io.MultiWriter(os.Stdout, byteCounter)
 
 	// execute the command
 	cmd := exec.Command("zsh", "-c", command)
