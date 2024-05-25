@@ -102,6 +102,8 @@ func handleChat(prompt, model, mode string) {
 				os.Exit(0)
 			}
 
+			fmt.Println()
+
 			// execute the command
 			cmd := exec.Command("zsh", "-c", command)
 			cmd.Stdout = os.Stdout
