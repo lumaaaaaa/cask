@@ -7,12 +7,10 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/creack/pty"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"runtime"
 	"strconv"
 	"strings"
@@ -21,7 +19,7 @@ import (
 
 func handleChat(prompt, model, mode string) {
 	// pretty!
-	fmt.Println("> ", prompt)
+	fmt.Println("> ", prompt, "\n")
 
 	// create request body
 	var request RequestBody
@@ -85,45 +83,15 @@ func handleChat(prompt, model, mode string) {
 			log.Fatal("Error unmarshalling command response: ", err)
 		}
 
+		fmt.Println(cmdResponse.Message)
+
 		fmt.Println("\n-----")
-		fmt.Println("⚠️  cask would like to execute the following commands:")
+		fmt.Printf("⚠️  cask would like to execute the %d command(s):\n", len(cmdResponse.Commands))
 		for _, command := range cmdResponse.Commands {
-			// print the command
-			fmt.Printf("> `%s`\n", command)
-
-			// check if the user wants to execute the command
-			fmt.Print("execute this command? (y/n): ")
-			var input string
-			_, err := fmt.Scanln(&input)
-			if err != nil {
-				log.Fatal("Error reading input: ", err)
-			}
-
-			if input != "y" {
-				fmt.Println("exiting...")
-				os.Exit(0)
-			}
-
-			fmt.Println()
-
-			// execute the command
-			cmd := exec.Command("zsh", "-c", command)
-			f, err := pty.Start(cmd)
-			if err != nil {
-				fmt.Println("⚠️ ", strings.Split(command, " ")[0], "exited with error: ", err)
-			}
-
-			// print the output
-			n, _ := io.Copy(os.Stdout, f)
-
-			// print a newline if there was output
-			if n != 0 {
-				fmt.Println()
-			}
-			fmt.Println("---")
+			handleCommand(command)
 		}
 
-		fmt.Println("\n✅  all commands finished executing.")
+		fmt.Println("✅  all commands finished executing.")
 		break
 
 	case "default":

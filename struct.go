@@ -30,4 +30,5 @@ type ResponseChunk struct {
 
 type CommandResponse struct {
 	Commands []string `json:"commands"`
+	Message  string   `json:"message"`
 }
