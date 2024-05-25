@@ -7,6 +7,7 @@ import (
 	b64 "encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/creack/pty"
 	"io"
 	"log"
 	"net/http"
@@ -84,7 +85,8 @@ func handleChat(prompt, model, mode string) {
 			log.Fatal("Error unmarshalling command response: ", err)
 		}
 
-		fmt.Println("\ncask would like to execute the following commands:")
+		fmt.Println("\n-----")
+		fmt.Println("⚠️  cask would like to execute the following commands:")
 		for _, command := range cmdResponse.Commands {
 			// print the command
 			fmt.Printf("> `%s`\n", command)
@@ -106,17 +108,22 @@ func handleChat(prompt, model, mode string) {
 
 			// execute the command
 			cmd := exec.Command("zsh", "-c", command)
-			cmd.Stdout = os.Stdout
-			cmd.Stderr = os.Stderr
-			err = cmd.Run()
+			f, err := pty.Start(cmd)
 			if err != nil {
-				fmt.Println(strings.Split(command, " ")[0], "exited with error: ", err)
+				fmt.Println("⚠️ ", strings.Split(command, " ")[0], "exited with error: ", err)
 			}
 
-			fmt.Println()
+			// print the output
+			n, _ := io.Copy(os.Stdout, f)
+
+			// print a newline if there was output
+			if n != 0 {
+				fmt.Println()
+			}
+			fmt.Println("---")
 		}
 
-		fmt.Println("command execution finished.")
+		fmt.Println("\n✅  all commands finished executing.")
 		break
 
 	case "default":
