@@ -17,9 +17,11 @@ import (
 	"time"
 )
 
-func handleChat(prompt, model, mode string) {
+func handleChat(prompt, model, mode string, raw bool) {
 	// pretty!
-	fmt.Println("> ", prompt, "\n")
+	if !raw {
+		fmt.Println("> ", prompt, "\n")
+	}
 
 	// create request body
 	var request RequestBody
@@ -76,6 +78,8 @@ func handleChat(prompt, model, mode string) {
 		}
 
 		response := ask(body)
+
+		fmt.Println(response)
 
 		var cmdResponse CommandResponse
 		err = json.Unmarshal([]byte(response), &cmdResponse)
