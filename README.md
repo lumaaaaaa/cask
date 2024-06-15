@@ -16,7 +16,7 @@ To compile and install:
 ```shell
 git clone https://github.com/lumaaaaaa/cask
 cd cask
-go run .
+go install
 ```
 
 Then simply:
