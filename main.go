@@ -23,7 +23,7 @@ var (
 )
 
 func printHelp() {
-	fmt.Printf("// cask - AI-powered chat interface - Program v%s - API v%s\n", Version, APIVersion)
+	fmt.Printf("// cask - AI-powered chat interface - program v%s - API v%s\n", Version, APIVersion)
 	fmt.Println("usage: cask [args] <prompt> ")
 	fmt.Println("arguments:")
 	fmt.Println("\t-h, --help\t\tshow this help message and exit")
