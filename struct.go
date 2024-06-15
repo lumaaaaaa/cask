@@ -1,14 +1,16 @@
 package main
 
 type RequestBody struct {
-	FunctionImageGen  bool `json:"function_image_gen"`
-	FunctionWebSearch bool `json:"function_web_search"`
-	MaxTokens         int  `json:"max_tokens"`
-	Messages          []struct {
-		Content string `json:"content"`
-		Role    string `json:"role"`
-	} `json:"messages"`
-	Model string `json:"model"`
+	FunctionImageGen  bool      `json:"function_image_gen"`
+	FunctionWebSearch bool      `json:"function_web_search"`
+	MaxTokens         int       `json:"max_tokens"`
+	Messages          []Message `json:"messages"`
+	Model             string    `json:"model"`
+}
+
+type Message struct {
+	Content string `json:"content"`
+	Role    string `json:"role"`
 }
 
 type ResponseChunk struct {

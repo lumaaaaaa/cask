@@ -50,10 +50,7 @@ func handleChat(prompt, model, mode string, raw bool) {
 			lsOutput += entry.Name() + " - Is directory: " + strconv.FormatBool(entry.IsDir()) + "\n"
 		}
 
-		request.Messages = []struct {
-			Content string `json:"content"`
-			Role    string `json:"role"`
-		}{
+		request.Messages = []Message{
 			{
 				Content: CMDSystemPrompt,
 				Role:    "system",
@@ -99,10 +96,11 @@ func handleChat(prompt, model, mode string, raw bool) {
 		break
 
 	case "default":
-		request.Messages = []struct {
-			Content string `json:"content"`
-			Role    string `json:"role"`
-		}{
+		// parse image URLs
+		//regex := regexp.MustCompile("(http)?s?:?(\\/\\/[^\"']*\\.(?:png|jpg|jpeg|gif|png|svg|webp|bmp|jfif))")
+		//imageURLs := regex.FindAllString(prompt, -1)
+
+		request.Messages = []Message{
 			{
 				Content: SystemPrompt,
 				Role:    "system",
