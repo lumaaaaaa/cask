@@ -146,7 +146,7 @@ func ask(body []byte) string {
 	req.Header.Add("Date", timestamp)
 	req.Header.Add("Client-time-zone", "-04:00") // TODO: dynamic timezone
 	req.Header.Add("Authorization", authorization)
-	req.Header.Add("User-Agent", "ChatOn_Android/"+Version)
+	req.Header.Add("User-Agent", "ChatOn_Android/"+APIVersion)
 	req.Header.Add("Accept-Language", "en-US")
 	req.Header.Add("X-Cl-Options", "hb")
 	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
