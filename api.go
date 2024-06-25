@@ -165,6 +165,9 @@ func ask(body []byte) string {
 	// handle body
 	content := ""
 	split := strings.Split(string(respBody), "data: ")
+	if string(respBody) == "Bad Request" {
+		log.Fatal("Bad Request: It is likely that one of the parameters passed to the program is invalid.")
+	}
 	for _, s := range split {
 		// ignore empty strings and end of transmission
 		if len(s) != 0 && s != "[DONE]\x0a\x0a" {
