@@ -6,6 +6,7 @@ type RequestBody struct {
 	MaxTokens         int       `json:"max_tokens"`
 	Messages          []Message `json:"messages"`
 	Model             string    `json:"model"`
+	Source            string    `json:"source"`
 }
 
 type Message struct {

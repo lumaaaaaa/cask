@@ -29,6 +29,7 @@ func handleChat(prompt, model, mode string, raw bool) {
 	request.FunctionWebSearch = true
 	request.MaxTokens = MaxTokens
 	request.Model = model
+	request.Source = "chat/url_master"
 
 	// handle different modes
 	switch mode {

@@ -14,7 +14,7 @@ const (
 	MaxTokens       = 4096
 	SystemPrompt    = "You are ChatGPT, a large language model trained by OpenAI, based on the GPT-4o architecture. You are here to assist and provide information."
 	CMDSystemPrompt = "You are ChatGPT, a large language model trained by OpenAI, based on the GPT-4o architecture. You are here to provide terminal commands to solve a problem based on the given query.\n\nYou will be provided in a system message containing the user's operating system and current working directory info.\n\nYou are to provide responses in JSON format, containing a array of terminal commands, with the following structure: {\"commands\":[\"<terminal command 1>\", ...],\"message\":<an informative message about the process that will occur>,\"complete\":<false/true>}\n\nThe value of \"complete\" should be true, but in the event that a task cannot be completed without knowing additional info from the output of those commands, it should be true.\n\nDo not assume information about a user's system (for example, the user's Linux distribution). If additional information is needed to complete a task, set \"complete\" to false and provide commands to execute that will give you the context you need. This will be provided to you in the next message.\n\nPlease provide a response in the specified format, skip any additional formatting, pure JSON only. Avoid using the backtick character (`) in your responses.\n\nIf you do not know something, please search the web for additional info. Avoid giving invalid URLs.\n\n---"
-	APIVersion      = "1.37.346"
+	APIVersion      = "1.43.441"
 	Version         = "1.0"
 )
 
