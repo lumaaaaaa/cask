@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net/http"
 	"os"
@@ -29,8 +30,9 @@ func printHelp() {
 	fmt.Println("\t-h, --help\t\tshow this help message and exit")
 	fmt.Println("\t-v, --version\t\tshow version information and exit")
 	fmt.Println("\t-c, --cmd\t\tenable the command mode")
-	fmt.Println("\t-m, --model <model name>\t\tset the model to use")
+	fmt.Println("\t-m, --model <model>\tset the model to use")
 	fmt.Println("\t-r, --raw\t\tonly output the response from the model")
+	fmt.Println("invoking the executable without any arguments will start cask in interactive mode")
 }
 
 func main() {
@@ -39,9 +41,27 @@ func main() {
 	raw := false
 	promptStart := 0
 
-	if len(os.Args) < 2 {
-		printHelp()
-		os.Exit(1)
+	// check for interactive mode
+	if len(os.Args) == 1 {
+		// get the prompt from the user
+		buffer := bufio.NewReader(os.Stdin)
+		fmt.Print("> ")
+		prompt, err := buffer.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading prompt: ", err)
+			os.Exit(1)
+		}
+
+		// trim the prompt
+		prompt = strings.TrimSpace(prompt)
+
+		// pretty!
+		fmt.Println("---")
+
+		// handle the chat
+		handleChat(prompt, model, mode, raw)
+
+		return
 	}
 
 	for i := 1; i < len(os.Args); i++ {
@@ -67,7 +87,9 @@ func main() {
 			model = os.Args[i]
 			break
 		case "-r", "--raw":
+			i++
 			raw = true
+			break
 		default:
 			promptStart = i
 			break
@@ -88,6 +110,11 @@ func main() {
 	if raw && mode == "cmd" {
 		fmt.Println("Error: raw mode cannot be used with command mode.")
 		os.Exit(1)
+	}
+
+	// pretty!
+	if !raw {
+		fmt.Println("> ", args, "\n---")
 	}
 
 	handleChat(args, model, mode, raw)

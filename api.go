@@ -18,11 +18,6 @@ import (
 )
 
 func handleChat(prompt, model, mode string, raw bool) {
-	// pretty!
-	if !raw {
-		fmt.Println("> ", prompt, "\n")
-	}
-
 	// create request body
 	var request RequestBody
 	request.FunctionImageGen = true
