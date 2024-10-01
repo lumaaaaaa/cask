@@ -71,8 +71,7 @@ func handleChat(prompt, model, mode string, raw bool) {
 		}
 
 		response := ask(body)
-
-		fmt.Println(response)
+    
 
 		var cmdResponse CommandResponse
 		err = json.Unmarshal([]byte(response), &cmdResponse)
