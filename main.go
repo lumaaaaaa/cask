@@ -55,11 +55,8 @@ func main() {
 		// trim the prompt
 		prompt = strings.TrimSpace(prompt)
 
-		// pretty!
-		fmt.Println("---")
-
 		// handle the chat
-		handleChat(prompt, model, mode, raw)
+		handleChat(prompt, model, mode, false)
 
 		return
 	}
@@ -114,7 +111,7 @@ func main() {
 
 	// pretty!
 	if !raw {
-		fmt.Println("> ", args, "\n---")
+		fmt.Println("> ", args)
 	}
 
 	handleChat(args, model, mode, raw)
